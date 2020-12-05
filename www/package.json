@@ -1,0 +1,30 @@
+{
+  "name": "electron-typescript-starter",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Huy",
+  "license": "BSD-2-Clause",
+  "dependencies": {
+    "@mdi/font": "^5.8.55",
+    "nanoid": "^3.1.20",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
+    "react-router-dom": "^5.2.0"
+  },
+  "scripts": {
+    "dev": "parcel ./index.html",
+    "dist": "parcel build ./index.html"
+  },
+  "devDependencies": {
+    "@types/react": "^16.9.2",
+    "@types/react-dom": "^16.8.5",
+    "@types/react-router-dom": "^5.1.6",
+    "autoprefixer": "^9.8.6",
+    "parcel-bundler": "^1.12.3",
+    "postcss": "^7.0.35",
+    "postcss-modules": "^3.2.2",
+    "sass": "^1.22.10",
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.1",
+    "typescript": "^3.5.3"
+  }
+}

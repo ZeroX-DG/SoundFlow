@@ -1,0 +1,35 @@
+.player {
+  box-shadow: 0 -10px 20px darken(#fdfdfd, 5);
+  .progress-bar {
+    font-feature-settings: "tnum";
+  }
+
+  .volume-control {
+    .volume-slider {
+      display: none;
+      height: 150px;
+
+      &:hover {
+        display: block;
+      }
+    }
+
+    .volume-button {
+      position: relative;
+      outline: none;
+
+      &::before {
+        content: "";
+        width: 100%;
+        height: 20px;
+        position: absolute;
+        top: -10px;
+        left: 0;
+      }
+
+      &:hover + .volume-slider {
+        display: block;
+      }
+    }
+  }
+}
