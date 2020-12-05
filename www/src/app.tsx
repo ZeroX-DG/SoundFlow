@@ -40,11 +40,17 @@ interface IRemoveFromPlaylistAction {
   payload: { track: ITrackInfo; playlistId: string };
 }
 
+interface IPlayTrackAction {
+  type: "PLAY_TRACK";
+  payload: ITrackInfo;
+}
+
 type Action =
   | IAddPlaylistAction
   | IRemovePlaylistAction
   | IAddToPlaylistAction
-  | IRemoveFromPlaylistAction;
+  | IRemoveFromPlaylistAction
+  | IPlayTrackAction;
 
 const initialAppState: AllDocsMap = JSON.parse(
   window.localStorage.getItem("soundflow")

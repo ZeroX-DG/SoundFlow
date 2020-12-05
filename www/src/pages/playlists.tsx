@@ -13,7 +13,7 @@ const Playlist = ({
 }) => {
   return (
     <div className="flex flex-col w-44 mx-9 mb-10">
-      <section className="grid grid-cols-2 grid-rows-2 h-44 rounded-full overflow-hidden shadow-lg relative">
+      <section className="grid grid-cols-2 grid-rows-2 h-44 rounded-lg overflow-hidden shadow-lg relative">
         {playlist.songs.slice(0, 4).map(song => (
           <img
             key={song.url}
