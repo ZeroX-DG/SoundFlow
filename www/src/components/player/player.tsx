@@ -104,7 +104,7 @@ export const Player = () => {
     "https://cdn.shopify.com/s/files/1/0197/1326/products/Radio_AMoon_Cover_240416_1200x.jpg?v=1542351360";
 
   return (
-    <section className="w-full h-100px bg-white flex-none flex player">
+    <section className="w-full h-100px bg-white flex-none flex player z-10">
       <AudioInfo
         albumUrl={albumUrl}
         title="Burn the Witch"

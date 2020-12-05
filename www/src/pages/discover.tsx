@@ -47,7 +47,10 @@ const SearchResultItem = ({
   const { title, author, thumbnail_url } = item;
   return (
     <li className="bg-white p-3 flex shadow-sm rounded-lg mb-5 w-full">
-      <img className="block w-16 h-16 rounded-lg" src={thumbnail_url} />
+      <img
+        className="block w-16 h-16 rounded-lg object-cover"
+        src={thumbnail_url}
+      />
       <div className="px-3 flex-grow flex-shrink" style={{ minWidth: "0" }}>
         <p className="font-bold mb-1 text-lg whitespace-nowrap overflow-ellipsis overflow-hidden">
           {title}

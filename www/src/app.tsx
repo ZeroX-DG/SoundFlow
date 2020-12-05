@@ -24,6 +24,11 @@ interface IAddPlaylistAction {
   payload: IPlaylist;
 }
 
+interface IRemovePlaylistAction {
+  type: "REMOVE_PLAYLIST";
+  payload: string;
+}
+
 interface IAddToPlaylistAction {
   type: "ADD_TO_PLAYLIST";
   payload: { track: ITrackInfo; playlistId: string };
@@ -36,6 +41,7 @@ interface IRemoveFromPlaylistAction {
 
 type Action =
   | IAddPlaylistAction
+  | IRemovePlaylistAction
   | IAddToPlaylistAction
   | IRemoveFromPlaylistAction;
 
@@ -67,10 +73,22 @@ const AppContextProvider = ({ children }: React.PropsWithChildren<{}>) => {
           const playlist = playlists.find(
             p => p._id == action.payload.playlistId
           );
-          playlist.songs.push(action.payload.track);
+          if (
+            playlist.songs.some(song => song.url == action.payload.track.url)
+          ) {
+            return state;
+          }
           return {
             ...state,
-            playlists
+            playlists: state.playlists.map(playlist => {
+              if (playlist._id == action.payload.playlistId) {
+                return {
+                  ...playlist,
+                  songs: playlist.songs.concat(action.payload.track)
+                };
+              }
+              return playlist;
+            })
           };
         }
 
@@ -85,6 +103,13 @@ const AppContextProvider = ({ children }: React.PropsWithChildren<{}>) => {
           return {
             ...state,
             playlists
+          };
+        }
+
+        case "REMOVE_PLAYLIST": {
+          return {
+            ...state,
+            playlists: state.playlists.filter(p => p._id != action.payload)
           };
         }
 
@@ -116,10 +141,7 @@ export const App = () => {
             style={{ height: "calc(100% - 100px)" }}
           >
             <SideBar />
-            <section
-              className="bg-dark-white flex-grow flex-shrink"
-              style={{ minWidth: "0" }}
-            >
+            <section className="bg-dark-white flex-1" style={{ minWidth: "0" }}>
               <Switch>
                 <Route exact path="/" component={Discover} />
                 <Route path="/playlists" component={Playlists} />
