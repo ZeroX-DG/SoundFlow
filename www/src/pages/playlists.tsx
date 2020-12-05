@@ -1,5 +1,6 @@
 import * as React from "react";
 import { IPlaylist, AppContext } from "../app";
+import { Link } from "react-router-dom";
 
 const Playlist = ({
   playlist,
@@ -11,7 +12,7 @@ const Playlist = ({
   onDelete: () => void;
 }) => {
   return (
-    <div className="flex flex-col w-44 cursor-pointer mx-9 mb-10">
+    <div className="flex flex-col w-44 mx-9 mb-10">
       <section className="grid grid-cols-2 grid-rows-2 h-44 rounded-full overflow-hidden shadow-lg relative">
         {playlist.songs.slice(0, 4).map(song => (
           <img
@@ -22,7 +23,7 @@ const Playlist = ({
         ))}
         {isEditable && (
           <div
-            className="w-full h-full rounded-full bg-red-500 bg-opacity-80 absolute flex items-center justify-center"
+            className="w-full h-full rounded-full bg-red-500 bg-opacity-80 absolute flex items-center justify-center cursor-pointer"
             onClick={onDelete}
           >
             <span className="mdi mdi-delete text-white text-4xl"></span>
@@ -30,7 +31,9 @@ const Playlist = ({
         )}
       </section>
       <section className="mt-5">
-        <p className="font-bold text-center text-xl">{playlist.name}</p>
+        <Link to={`/playlist/${playlist._id}`}>
+          <p className="font-bold text-center text-xl">{playlist.name}</p>
+        </Link>
       </section>
     </div>
   );
@@ -54,9 +57,9 @@ export const Playlists = () => {
       <div className="p-5 flex flex-1 flex-wrap overflow-auto">
         {state.playlists.map(playlist => (
           <Playlist
+            key={playlist._id}
             playlist={playlist}
             isEditable={isEditable}
-            key={playlist._id}
             onDelete={() => {
               dispatch({
                 type: "REMOVE_PLAYLIST",

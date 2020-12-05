@@ -6,6 +6,7 @@ import { PlayingQueue } from "./components/playing-queue";
 
 import { Discover } from "./pages/discover";
 import { Playlists } from "./pages/playlists";
+import { Playlist } from "./pages/playlist";
 
 import { ITrackInfo } from "./services/search";
 
@@ -145,6 +146,7 @@ export const App = () => {
               <Switch>
                 <Route exact path="/" component={Discover} />
                 <Route path="/playlists" component={Playlists} />
+                <Route path="/playlist/:id" component={Playlist} />
               </Switch>
             </section>
             <PlayingQueue />
