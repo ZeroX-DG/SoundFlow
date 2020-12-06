@@ -62,10 +62,12 @@ const AudioControl = ({
 
 const AudioProgressBar = ({
   current,
-  length
+  length,
+  onProgressChange
 }: {
   current: number;
   length: number;
+  onProgressChange: (current: number) => void;
 }) => {
   const [progressWidth, setProgressWidth] = React.useState(0);
   const progressBarRef = React.useRef<HTMLDivElement>(null);
@@ -77,19 +79,30 @@ const AudioProgressBar = ({
     setProgressWidth((percentage * width) / 100);
   });
 
+  const handleProgressClick = (e: any) => {
+    const { width, left } = progressBarRef.current.getBoundingClientRect();
+    const x = e.clientX - left;
+    const percent = (x / width) * 100;
+    const newCurrentTime = Math.floor((percent * length) / 100);
+    onProgressChange(newCurrentTime);
+  };
+
   return (
     <div className="flex self-center ml-10 flex-grow progress-bar">
       <span className="text-black text-opacity-70 text-sm font-medium">
         {formatTime(current)}
       </span>
       <div className="flex-grow flex items-center px-6">
-        <div className="relative w-full h-1 flex items-center">
+        <div
+          className="relative w-full h-5 cursor-pointer flex items-center"
+          onClick={handleProgressClick}
+        >
           <div
-            className="w-full bg-gray-200 h-1 absolute cursor-pointer"
+            className="w-full bg-gray-200 h-1 absolute"
             ref={progressBarRef}
           />
           <div
-            className="bg-indigo-600 h-1 absolute cursor-pointer w-px left-0"
+            className="bg-indigo-600 h-1 absolute w-px left-0"
             style={{
               transform: `scaleX(${progressWidth})`,
               transformOrigin: "left center"
@@ -110,22 +123,45 @@ const AudioProgressBar = ({
   );
 };
 
-const AudioVolumeControl = ({ percentage }: { percentage: number }) => {
+const AudioVolumeControl = ({
+  percentage,
+  onVolumeChange
+}: {
+  percentage: number;
+  onVolumeChange: (newVolume: number) => void;
+}) => {
+  const volumeBarRef = React.useRef<HTMLDivElement>(null);
+
+  const handleVolumeClick = (e: any) => {
+    const { height, top } = volumeBarRef.current.getBoundingClientRect();
+    const y = height - (e.clientY - top);
+    const percent = (y / height) * 100;
+    onVolumeChange(percent);
+  };
+
   return (
     <div className="px-5 self-center text-2xl relative volume-control">
       <button className="cursor-pointer volume-button">
         <span className="mdi mdi-volume-medium"></span>
       </button>
       <div className="bg-white p-5 absolute flex justify-center bottom-10 shadow-md right-3 volume-slider">
-        <div className="relative flex justify-center w-1 h-full">
-          <div className="bg-gray-200 h-full w-1 cursor-pointer absolute" />
+        <div
+          className="relative flex justify-center w-5 h-full cursor-pointer"
+          ref={volumeBarRef}
+          onClick={handleVolumeClick}
+        >
+          <div className="bg-gray-200 h-full w-1 absolute" />
           <div
-            className="bg-indigo-600 w-1 cursor-pointer absolute self-end"
-            style={{ height: `${percentage}%` }}
+            className="bg-indigo-600 w-1 absolute self-end"
+            style={{
+              height: `${percentage}%`
+            }}
           />
           <div
             className="rounded-full cursor-pointer p-2 bg-indigo-600 absolute self-end"
-            style={{ bottom: `calc(${percentage}% - 0.5rem)` }}
+            style={{
+              bottom: `calc(${percentage}% - 0.5rem)`
+            }}
           />
         </div>
       </div>
@@ -184,6 +220,15 @@ export const Player = () => {
     }
   };
 
+  const handleProgressChange = (current: number) => {
+    audio.current.currentTime = current;
+  };
+
+  const handleVolumeChange = (percent: number) => {
+    setVolume(percent);
+    audio.current.volume = percent / 100;
+  };
+
   const currentTrack = state.playQueue[state.playQueueIndex];
 
   return (
@@ -199,8 +244,15 @@ export const Player = () => {
         onNextClick={() => dispatch({ type: "NEXT_TRACK" })}
         onPrevClick={() => dispatch({ type: "PREV_TRACK" })}
       />
-      <AudioProgressBar current={currentTime} length={duration} />
-      <AudioVolumeControl percentage={volume} />
+      <AudioProgressBar
+        onProgressChange={handleProgressChange}
+        current={currentTime}
+        length={duration}
+      />
+      <AudioVolumeControl
+        percentage={volume}
+        onVolumeChange={handleVolumeChange}
+      />
     </section>
   );
 };
