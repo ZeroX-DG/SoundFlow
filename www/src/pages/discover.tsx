@@ -62,12 +62,6 @@ const SearchResultItem = ({
       <div className="self-center w-80 flex justify-end">
         <ul className="list-none flex space-x-4">
           <li>
-            <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-full text-sm">
-              <span className="mdi mdi-podcast mr-2"></span>
-              Podcast <span className="mdi mdi-plus"></span>
-            </button>
-          </li>
-          <li>
             <button
               className="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-full text-sm"
               onClick={() => onAddPlaylist(item)}
@@ -173,6 +167,7 @@ export const Discover = () => {
   const [searchResult, setSearchResult] = React.useState(null);
   const [showAddToPlaylist, setShowAddToPlaylist] = React.useState(false);
   const [itemToAddToPlaylist, setItemToAddToPlaylist] = React.useState(null);
+  const [error, setError] = React.useState(null);
 
   return (
     <>
@@ -189,18 +184,28 @@ export const Discover = () => {
         <SearchBox
           onEnter={async () => {
             const result = await api.search_tracks(searchQuery);
+            if (result.error) {
+              setError(result.error);
+              return;
+            }
             setSearchResult(result);
           }}
           onChange={setSearchQuery}
           query={searchQuery}
         />
-        <SearchResultList
-          result={searchResult}
-          onAddPlaylist={item => {
-            setItemToAddToPlaylist(item);
-            setShowAddToPlaylist(true);
-          }}
-        />
+        {error ? (
+          <h1 className="text-2xl text-center text-black text-opacity-40 mt-10">
+            {error}
+          </h1>
+        ) : (
+          <SearchResultList
+            result={searchResult}
+            onAddPlaylist={item => {
+              setItemToAddToPlaylist(item);
+              setShowAddToPlaylist(true);
+            }}
+          />
+        )}
       </div>
     </>
   );

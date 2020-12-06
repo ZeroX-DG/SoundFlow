@@ -17,11 +17,11 @@ adapters = {
 def search(query):
     result = {}
     try:
-        for adapter in adapters.itervalues():
+        for adapter in adapters.values():
             result[adapter.name] = adapter.search_tracks(query)
         return jsonify(result)
-    except:
-        return jsonify({ 'error': 'Error while getting track list' })
+    except Exception as e:
+        return jsonify({ 'error': 'Error while getting track list: ' + str(e) })
 
 @app.route('/api/play')
 def get_audio_url():

@@ -79,12 +79,17 @@ type Action =
 const DEFAULT_DATA: AppDataMap = {
   playlists: [],
   playQueue: [],
-  playQueueIndex: 0
+  playQueueIndex: -1
 };
 
-const parsed_data: AppDataMap = JSON.parse(
-  window.localStorage.getItem("soundflow")
-);
+let parsed_data: AppDataMap;
+
+try {
+  const parsed = JSON.parse(window.localStorage.getItem("soundflow"));
+  parsed_data = parsed;
+} catch {
+  parsed_data = DEFAULT_DATA;
+}
 
 const initialAppState: AppDataMap = { ...DEFAULT_DATA, ...parsed_data };
 
@@ -217,23 +222,36 @@ export const App = () => {
   return (
     <AppContextProvider>
       <BrowserRouter>
-        <div className="w-full h-full flex flex-col">
-          <div
-            className="flex bg-gray-200"
-            style={{ height: "calc(100% - 100px)" }}
-          >
-            <SideBar />
-            <section className="bg-dark-white flex-1" style={{ minWidth: "0" }}>
-              <Switch>
-                <Route exact path="/" component={Discover} />
-                <Route path="/playlists" component={Playlists} />
-                <Route path="/playlist/:id" component={Playlist} />
-              </Switch>
-            </section>
-            <PlayingQueue />
-          </div>
-          <Player />
-        </div>
+        <AppContext.Consumer>
+          {({ state }) => (
+            <div className="w-full h-full flex flex-col">
+              <div
+                className="flex bg-gray-200"
+                style={{
+                  height:
+                    state.playQueueIndex >= 0 &&
+                    state.playQueueIndex < state.playQueue.length
+                      ? "calc(100% - 100px)"
+                      : "100%"
+                }}
+              >
+                <SideBar />
+                <section
+                  className="bg-dark-white flex-1"
+                  style={{ minWidth: "0" }}
+                >
+                  <Switch>
+                    <Route exact path="/" component={Discover} />
+                    <Route path="/playlists" component={Playlists} />
+                    <Route path="/playlist/:id" component={Playlist} />
+                  </Switch>
+                </section>
+                <PlayingQueue />
+              </div>
+              <Player />
+            </div>
+          )}
+        </AppContext.Consumer>
       </BrowserRouter>
     </AppContextProvider>
   );

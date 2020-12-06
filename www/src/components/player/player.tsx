@@ -2,7 +2,7 @@ import * as React from "react";
 import "./style.scss";
 import { timeFormatter } from "../../utils";
 import { AppContext } from "../../app";
-import { Api } from "../../services/api";
+import { Api, IError, ITrackUrl } from "../../services/api";
 
 const api = new Api();
 
@@ -199,7 +199,7 @@ export const Player = () => {
 
   React.useEffect(() => {
     (async () => {
-      if (state.playQueueIndex != -1) {
+      if (state.playQueueIndex != -1 && state.playQueue.length > 0) {
         if (playing) {
           audio.current.pause();
           setPlaying(false);
@@ -211,7 +211,13 @@ export const Player = () => {
           currentTrack.url,
           currentTrack.provider
         );
-        audio.current.src = source.url;
+
+        if ((source as IError).error) {
+          // TODO: handle error when we can't get track url
+          return;
+        }
+
+        audio.current.src = (source as ITrackUrl).url;
         audio.current.load();
       }
     })();
@@ -236,6 +242,10 @@ export const Player = () => {
   };
 
   const currentTrack = state.playQueue[state.playQueueIndex];
+
+  if (!currentTrack) {
+    return null;
+  }
 
   return (
     <section className="w-full h-100px bg-white flex-none flex player z-10">
