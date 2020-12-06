@@ -5,6 +5,9 @@ class ServiceAdapter(ABC):
     def search_tracks(self, keyword: str):
         pass
 
+    def get_track_url(self, url: str):
+        pass
+
 class ServiceTrackResponse(ABC):
     @abstractmethod
     def title(self) -> str:

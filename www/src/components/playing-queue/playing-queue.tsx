@@ -25,9 +25,14 @@ export const PlayingQueue = () => {
                     className={`mdi mdi-${isActive ? "pause" : "play"}`}
                   ></span>
                 </div>
-                <div className="flex-grow">
+                <div className="flex-grow text-sm">
                   <p
-                    className="font-bold mb-2 cursor-pointer"
+                    className="font-bold mb-2 cursor-pointer overflow-hidden"
+                    style={{
+                      WebkitLineClamp: "2",
+                      display: "-webkit-box",
+                      WebkitBoxOrient: "vertical"
+                    }}
                     onClick={() =>
                       dispatch({
                         type: "SET_PLAY_QUEUE_INDEX",
@@ -37,7 +42,7 @@ export const PlayingQueue = () => {
                   >
                     {track.title}
                   </p>
-                  <p className="text-sm">{track.author}</p>
+                  <p>{track.author}</p>
                 </div>
               </li>
             );

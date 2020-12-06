@@ -8,7 +8,7 @@ import { Discover } from "./pages/discover";
 import { Playlists } from "./pages/playlists";
 import { Playlist } from "./pages/playlist";
 
-import { ITrackInfo } from "./services/search";
+import { ITrackInfo } from "./services/api";
 
 export interface AppDataMap {
   playlists: IPlaylist[];
@@ -57,6 +57,14 @@ interface ISetPlayQueueIndexAction {
   payload: number;
 }
 
+interface INextTrackAction {
+  type: "NEXT_TRACK";
+}
+
+interface IPrevTrackAction {
+  type: "PREV_TRACK";
+}
+
 type Action =
   | IAddPlaylistAction
   | IRemovePlaylistAction
@@ -64,7 +72,9 @@ type Action =
   | IRemoveFromPlaylistAction
   | IAddTrackToPlayQueueAction
   | IAddPlaylistToPlayQueueAction
-  | ISetPlayQueueIndexAction;
+  | ISetPlayQueueIndexAction
+  | INextTrackAction
+  | IPrevTrackAction;
 
 const DEFAULT_DATA: AppDataMap = {
   playlists: [],
@@ -160,6 +170,28 @@ const AppContextProvider = ({ children }: React.PropsWithChildren<{}>) => {
           return {
             ...state,
             playQueueIndex: action.payload
+          };
+        }
+
+        case "NEXT_TRACK": {
+          let nextIndex = state.playQueueIndex + 1;
+          if (nextIndex >= state.playQueue.length) {
+            nextIndex = 0;
+          }
+          return {
+            ...state,
+            playQueueIndex: nextIndex
+          };
+        }
+
+        case "PREV_TRACK": {
+          let nextIndex = state.playQueueIndex - 1;
+          if (nextIndex < 0) {
+            nextIndex = state.playQueue.length - 1;
+          }
+          return {
+            ...state,
+            playQueueIndex: nextIndex
           };
         }
 

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useParams } from "react-router-dom";
 import { AppContext, IPlaylist } from "../app";
-import { ITrackInfo } from "../services/search";
+import { ITrackInfo } from "../services/api";
 
 const PlaylistHeader = ({
   playlist,

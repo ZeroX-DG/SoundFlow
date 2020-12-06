@@ -1,11 +1,11 @@
 import * as React from "react";
-import { Search, ISearchResult, ITrackInfo } from "../services/search";
+import { Api, ISearchResult, ITrackInfo } from "../services/api";
 import { Modal } from "../components/modal";
 import { SearchBox } from "../components/search-box";
 import { AppContext } from "../app";
 import { nanoid } from "nanoid";
 
-const searchService = new Search();
+const api = new Api();
 
 const SearchResultList = ({
   result,
@@ -188,7 +188,7 @@ export const Discover = () => {
         <p>Find new songs, albums and podcast.</p>
         <SearchBox
           onEnter={async () => {
-            const result = await searchService.search_tracks(searchQuery);
+            const result = await api.search_tracks(searchQuery);
             setSearchResult(result);
           }}
           onChange={setSearchQuery}
