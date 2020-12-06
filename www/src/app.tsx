@@ -10,8 +10,10 @@ import { Playlist } from "./pages/playlist";
 
 import { ITrackInfo } from "./services/search";
 
-export interface AllDocsMap {
+export interface AppDataMap {
   playlists: IPlaylist[];
+  playQueue: ITrackInfo[];
+  playQueueIndex: number;
 }
 
 export interface IPlaylist {
@@ -40,9 +42,19 @@ interface IRemoveFromPlaylistAction {
   payload: { track: ITrackInfo; playlistId: string };
 }
 
-interface IPlayTrackAction {
-  type: "PLAY_TRACK";
+interface IAddTrackToPlayQueueAction {
+  type: "ADD_TRACK_TO_PLAY_QUEUE";
   payload: ITrackInfo;
+}
+
+interface IAddPlaylistToPlayQueueAction {
+  type: "ADD_PLAYLIST_TO_PLAY_QUEUE";
+  payload: IPlaylist;
+}
+
+interface ISetPlayQueueIndexAction {
+  type: "SET_PLAY_QUEUE_INDEX";
+  payload: number;
 }
 
 type Action =
@@ -50,14 +62,24 @@ type Action =
   | IRemovePlaylistAction
   | IAddToPlaylistAction
   | IRemoveFromPlaylistAction
-  | IPlayTrackAction;
+  | IAddTrackToPlayQueueAction
+  | IAddPlaylistToPlayQueueAction
+  | ISetPlayQueueIndexAction;
 
-const initialAppState: AllDocsMap = JSON.parse(
+const DEFAULT_DATA: AppDataMap = {
+  playlists: [],
+  playQueue: [],
+  playQueueIndex: 0
+};
+
+const parsed_data: AppDataMap = JSON.parse(
   window.localStorage.getItem("soundflow")
-) || { playlists: [] };
+);
+
+const initialAppState: AppDataMap = { ...DEFAULT_DATA, ...parsed_data };
 
 export const AppContext = React.createContext<{
-  state: AllDocsMap;
+  state: AppDataMap;
   dispatch: (action: Action) => void;
 }>({
   state: initialAppState,
@@ -66,7 +88,7 @@ export const AppContext = React.createContext<{
 
 const AppContextProvider = ({ children }: React.PropsWithChildren<{}>) => {
   const [state, dispatch] = React.useReducer(
-    (state: AllDocsMap, action: Action) => {
+    (state: AppDataMap, action: Action) => {
       switch (action.type) {
         case "ADD_PLAYLIST": {
           return {
@@ -117,6 +139,27 @@ const AppContextProvider = ({ children }: React.PropsWithChildren<{}>) => {
           return {
             ...state,
             playlists: state.playlists.filter(p => p._id != action.payload)
+          };
+        }
+
+        case "ADD_TRACK_TO_PLAY_QUEUE": {
+          return {
+            ...state,
+            playQueue: state.playQueue.concat(action.payload)
+          };
+        }
+
+        case "ADD_PLAYLIST_TO_PLAY_QUEUE": {
+          return {
+            ...state,
+            playQueue: state.playQueue.concat(action.payload.songs)
+          };
+        }
+
+        case "SET_PLAY_QUEUE_INDEX": {
+          return {
+            ...state,
+            playQueueIndex: action.payload
           };
         }
 

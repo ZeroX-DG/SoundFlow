@@ -23,7 +23,7 @@ const Playlist = ({
         ))}
         {isEditable && (
           <div
-            className="w-full h-full rounded-full bg-red-500 bg-opacity-80 absolute flex items-center justify-center cursor-pointer"
+            className="w-full h-full bg-red-500 bg-opacity-80 absolute flex items-center justify-center cursor-pointer"
             onClick={onDelete}
           >
             <span className="mdi mdi-delete text-white text-4xl"></span>

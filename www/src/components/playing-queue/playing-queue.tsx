@@ -1,12 +1,9 @@
 import * as React from "react";
-
-const playingQueue = [
-  { title: "Burn the Witch", author: "Radiohead" },
-  { title: "Daydream in Blue", author: "I Monster" },
-  { title: "Archie, Marry Me", author: "Alvvays" }
-];
+import { AppContext } from "../../app";
 
 export const PlayingQueue = () => {
+  const { state, dispatch } = React.useContext(AppContext);
+
   return (
     <aside className="h-full w-72 bg-white bg-opacity-50">
       <div className="p-5">
@@ -14,14 +11,14 @@ export const PlayingQueue = () => {
       </div>
       <div style={{ height: "calc(100% - 72px)" }} className="overflow-y-auto">
         <ul className="list-none">
-          {playingQueue.map((audio, index) => {
-            const isActive = index == 0;
+          {state.playQueue.map((track, index) => {
+            const isActive = state.playQueueIndex == index;
             return (
               <li
                 className={`p-5 flex ${
                   !isActive ? "text-black text-opacity-50" : "text-indigo-600"
                 }`}
-                key={index}
+                key={index + track.url}
               >
                 <div className="pr-4 self-center text-2xl">
                   <span
@@ -29,8 +26,18 @@ export const PlayingQueue = () => {
                   ></span>
                 </div>
                 <div className="flex-grow">
-                  <p className="font-bold mb-2">{audio.title}</p>
-                  <p className="text-sm">{audio.author}</p>
+                  <p
+                    className="font-bold mb-2 cursor-pointer"
+                    onClick={() =>
+                      dispatch({
+                        type: "SET_PLAY_QUEUE_INDEX",
+                        payload: index
+                      })
+                    }
+                  >
+                    {track.title}
+                  </p>
+                  <p className="text-sm">{track.author}</p>
                 </div>
               </li>
             );
