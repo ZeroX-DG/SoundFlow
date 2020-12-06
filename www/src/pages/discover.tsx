@@ -169,6 +169,15 @@ export const Discover = () => {
   const [itemToAddToPlaylist, setItemToAddToPlaylist] = React.useState(null);
   const [error, setError] = React.useState(null);
 
+  const handleSearch = async () => {
+    const result = await api.search_tracks(searchQuery);
+    if (result.error) {
+      setError(result.error);
+    } else {
+      setSearchResult(result);
+    }
+  };
+
   return (
     <>
       <AddToPlaylistModal
@@ -182,14 +191,7 @@ export const Discover = () => {
       <div className="px-5" style={{ height: "calc(100% - 72px)" }}>
         <p>Find new songs, albums and podcast.</p>
         <SearchBox
-          onEnter={async () => {
-            const result = await api.search_tracks(searchQuery);
-            if (result.error) {
-              setError(result.error);
-              return;
-            }
-            setSearchResult(result);
-          }}
+          onEnter={handleSearch}
           onChange={setSearchQuery}
           query={searchQuery}
         />
