@@ -3,6 +3,7 @@ from os import environ
 from flask import Flask, request
 from flask.json import jsonify
 from adapters.youtube import YoutubeAdapter
+from waitress import serve
 
 app = Flask(__name__, static_folder='./www/dist', static_url_path = '/')
 
@@ -40,3 +41,6 @@ def spa(path):
 @app.errorhandler(404)   
 def not_found(e):   
     return app.send_static_file('index.html')
+
+if __name__ == "__main__":
+    serve(app, host='0.0.0.0', port=5000)
