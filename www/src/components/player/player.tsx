@@ -189,6 +189,12 @@ export const Player = () => {
     audio.current.addEventListener("timeupdate", () => {
       setCurrentTime(audio.current.currentTime);
     });
+
+    audio.current.addEventListener("ended", () => {
+      dispatch({
+        type: "NEXT_TRACK"
+      });
+    });
   }, []);
 
   React.useEffect(() => {
