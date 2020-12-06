@@ -3,7 +3,6 @@ import { Link, useLocation } from "react-router-dom";
 
 const menu = [
   { icon: "magnify", label: "Discover", url: "/" },
-  { icon: "podcast", label: "Podcasts", url: "/podcasts" },
   { icon: "play-box-multiple", label: "Playlists", url: "/playlists" }
 ];
 
