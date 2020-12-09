@@ -6,10 +6,28 @@ export const PlayingQueue = () => {
 
   return (
     <aside className="h-full w-72 bg-white bg-opacity-50">
-      <div className="p-5">
+      <div className="p-5 flex justify-between">
         <h1 className="text-2xl font-bold">Playing queue</h1>
+        <button
+          title="Clear"
+          onClick={() =>
+            dispatch({
+              type: "CLEAR_PLAY_QUEUE"
+            })
+          }
+        >
+          <span className="mdi mdi-autorenew text-2xl"></span>
+        </button>
       </div>
       <div style={{ height: "calc(100% - 72px)" }} className="overflow-y-auto">
+        {state.playQueue.length == 0 && (
+          <div className="mt-10 text-center text-black text-opacity-40">
+            <h1 className="font-bold text-xl">Queue is empty</h1>
+            <p className="mt-3 px-5">
+              Choose some tracks/playlists to add to this queue
+            </p>
+          </div>
+        )}
         <ul className="list-none">
           {state.playQueue.map((track, index) => {
             const isActive = state.playQueueIndex == index;

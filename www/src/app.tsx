@@ -65,6 +65,10 @@ interface IPrevTrackAction {
   type: "PREV_TRACK";
 }
 
+interface IClearPlayQueue {
+  type: "CLEAR_PLAY_QUEUE";
+}
+
 type Action =
   | IAddPlaylistAction
   | IRemovePlaylistAction
@@ -74,7 +78,8 @@ type Action =
   | IAddPlaylistToPlayQueueAction
   | ISetPlayQueueIndexAction
   | INextTrackAction
-  | IPrevTrackAction;
+  | IPrevTrackAction
+  | IClearPlayQueue;
 
 const DEFAULT_DATA: AppDataMap = {
   playlists: [],
@@ -197,6 +202,14 @@ const AppContextProvider = ({ children }: React.PropsWithChildren<{}>) => {
           return {
             ...state,
             playQueueIndex: nextIndex
+          };
+        }
+
+        case "CLEAR_PLAY_QUEUE": {
+          return {
+            ...state,
+            playQueueIndex: -1,
+            playQueue: []
           };
         }
 
