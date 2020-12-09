@@ -48,7 +48,7 @@ export const Playlists = () => {
         <h1 className="text-2xl font-bold">Playlists</h1>
         <button onClick={() => setIsEditable(!isEditable)}>
           {isEditable ? (
-            <span className="mdi mdi-close text-2xl"></span>
+            <span className="mdi mdi-check text-2xl"></span>
           ) : (
             <span className="mdi mdi-pencil-outline text-2xl"></span>
           )}
