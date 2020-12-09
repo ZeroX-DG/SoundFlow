@@ -94,69 +94,73 @@ const AddToPlaylistModal = ({
 
   return (
     <Modal show={show} onClose={onClose}>
-      <h1 className="text-xl font-bold">Add to playlist</h1>
-      <SearchBox onChange={setSearchQuery} query={searchQuery} />
-      <div className="w-full overflow-y-auto py-5">
-        <ul className="list-none">
-          {state.playlists
-            .filter(p =>
-              p.name.toLowerCase().includes(searchQuery.toLowerCase())
-            )
-            .map(playlist => {
-              const isSongInList = playlist.songs.some(
-                song => song.url == item.url
-              );
-              return (
+      <div className="flex flex-col h-full">
+        <div>
+          <h1 className="text-xl font-bold">Add to playlist</h1>
+          <SearchBox onChange={setSearchQuery} query={searchQuery} />
+        </div>
+        <div className="w-full overflow-y-auto py-5 flex-1">
+          <ul className="list-none">
+            {state.playlists
+              .filter(p =>
+                p.name.toLowerCase().includes(searchQuery.toLowerCase())
+              )
+              .map(playlist => {
+                const isSongInList = playlist.songs.some(
+                  song => song.url == item.url
+                );
+                return (
+                  <li
+                    className={`px-5 py-3 shadow-sm rounded-md flex cursor-pointer mb-3 ${
+                      isSongInList ? "bg-indigo-500 text-white" : "bg-white"
+                    }`}
+                    key={playlist._id}
+                    onClick={() =>
+                      dispatch({
+                        type: isSongInList
+                          ? "REMOVE_FROM_PLAYLIST"
+                          : "ADD_TO_PLAYLIST",
+                        payload: {
+                          track: item,
+                          playlistId: playlist._id
+                        }
+                      })
+                    }
+                  >
+                    <span
+                      className={`mdi mr-4 ${
+                        isSongInList
+                          ? "mdi-checkbox-marked-circle-outline"
+                          : "mdi-checkbox-blank-circle-outline"
+                      }`}
+                    ></span>
+                    <p className="flex-grow flex-shrink">{playlist.name}</p>
+                  </li>
+                );
+              })}
+            {searchQuery.length > 0 &&
+              !state.playlists.some(p => p.name == searchQuery) && (
                 <li
-                  className={`px-5 py-3 shadow-sm rounded-md flex cursor-pointer mb-3 ${
-                    isSongInList ? "bg-indigo-500 text-white" : "bg-white"
-                  }`}
-                  key={playlist._id}
+                  className="px-5 py-3 bg-white shadow-sm rounded-md flex cursor-pointer"
                   onClick={() =>
                     dispatch({
-                      type: isSongInList
-                        ? "REMOVE_FROM_PLAYLIST"
-                        : "ADD_TO_PLAYLIST",
+                      type: "ADD_PLAYLIST",
                       payload: {
-                        track: item,
-                        playlistId: playlist._id
+                        _id: nanoid(),
+                        name: searchQuery,
+                        songs: []
                       }
                     })
                   }
                 >
-                  <span
-                    className={`mdi mr-4 ${
-                      isSongInList
-                        ? "mdi-checkbox-marked-circle-outline"
-                        : "mdi-checkbox-blank-circle-outline"
-                    }`}
-                  ></span>
-                  <p className="flex-grow flex-shrink">{playlist.name}</p>
+                  <span className="mdi mdi-plus mr-4"></span>
+                  <p className="flex-grow flex-shrink">
+                    Create playlist {searchQuery}
+                  </p>
                 </li>
-              );
-            })}
-          {searchQuery.length > 0 &&
-            !state.playlists.some(p => p.name == searchQuery) && (
-              <li
-                className="px-5 py-3 bg-white shadow-sm rounded-md flex cursor-pointer"
-                onClick={() =>
-                  dispatch({
-                    type: "ADD_PLAYLIST",
-                    payload: {
-                      _id: nanoid(),
-                      name: searchQuery,
-                      songs: []
-                    }
-                  })
-                }
-              >
-                <span className="mdi mdi-plus mr-4"></span>
-                <p className="flex-grow flex-shrink">
-                  Create playlist {searchQuery}
-                </p>
-              </li>
-            )}
-        </ul>
+              )}
+          </ul>
+        </div>
       </div>
     </Modal>
   );
