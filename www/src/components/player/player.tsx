@@ -241,6 +241,23 @@ export const Player = () => {
     audio.current.volume = percent / 100;
   };
 
+  const handleKeyUp = (e: React.KeyboardEvent<HTMLElement>) => {
+    switch (e.key) {
+      case " ":
+      case "MediaPlay":
+        handlePlayClick(!playing);
+        break;
+      case "N":
+      case "MediaTrackNext":
+        dispatch({ type: "NEXT_TRACK" });
+        break;
+      case "P":
+      case "MediaTrackPrevious":
+        dispatch({ type: "PREV_TRACK" });
+        break;
+    }
+  };
+
   const currentTrack = state.playQueue[state.playQueueIndex];
 
   if (!currentTrack) {
@@ -248,7 +265,11 @@ export const Player = () => {
   }
 
   return (
-    <section className="w-full h-100px bg-white flex-none flex player z-10">
+    <section
+      className="w-full h-100px bg-white flex-none flex player z-10"
+      onKeyUp={handleKeyUp}
+      tabIndex={0}
+    >
       <AudioInfo
         thumbnailUrl={currentTrack.thumbnail_url}
         title={currentTrack.title}
