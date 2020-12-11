@@ -2,7 +2,7 @@ import * as React from "react";
 import "./style.scss";
 import { timeFormatter } from "../../utils";
 import { AppContext } from "../../app";
-import { Api, IError, ITrackUrl } from "../../services/api";
+import { Api, IError, ITrackUrl, ITrackInfo } from "../../services/api";
 
 const api = new Api();
 
@@ -195,7 +195,36 @@ export const Player = () => {
         type: "NEXT_TRACK"
       });
     });
+
+    initMediaSessionControl();
   }, []);
+
+  const updateMediaSessionMetadata = (track: ITrackInfo) => {
+    if ("mediaSession" in navigator) {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: track.title,
+        artist: track.author,
+        artwork: [
+          { src: track.thumbnail_url, sizes: "320x180", type: "image/png" }
+        ]
+      });
+    }
+  };
+
+  const initMediaSessionControl = () => {
+    navigator.mediaSession.setActionHandler("play", () =>
+      handlePlayClick(true)
+    );
+    navigator.mediaSession.setActionHandler("pause", () =>
+      handlePlayClick(false)
+    );
+    navigator.mediaSession.setActionHandler("nexttrack", () =>
+      dispatch({ type: "NEXT_TRACK" })
+    );
+    navigator.mediaSession.setActionHandler("previoustrack", () =>
+      dispatch({ type: "PREV_TRACK" })
+    );
+  };
 
   React.useEffect(() => {
     (async () => {
@@ -219,12 +248,16 @@ export const Player = () => {
 
         audio.current.src = (source as ITrackUrl).url;
         audio.current.load();
+        updateMediaSessionMetadata(currentTrack);
       }
     })();
   }, [state.playQueueIndex]);
 
   const handlePlayClick = (isAllowPlay: boolean) => {
     setPlaying(isAllowPlay);
+    if ("mediaSession" in navigator) {
+      navigator.mediaSession.playbackState = playing ? "playing" : "paused";
+    }
     if (isAllowPlay) {
       audio.current.play();
     } else {
