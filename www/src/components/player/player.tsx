@@ -277,7 +277,7 @@ export const Player = () => {
     audio.current.currentTime = current;
   };
 
-  const handleVolumeChange = (percent: number) => {
+  const handleVolumeChange = (percent: number, isMute: boolean) => {
     // Bound check for percentage
     let new_percent: number;
     if (percent < 0) {
@@ -289,7 +289,7 @@ export const Player = () => {
     }
 
     setVolume(new_percent);
-    if (!mute) {
+    if (!isMute) {
       audio.current.volume = new_percent / 100;
     }
   };
@@ -299,7 +299,7 @@ export const Player = () => {
     if (isMute) {
       audio.current.volume = 0;
     } else {
-      handleVolumeChange(volume);
+      handleVolumeChange(volume, false);
     }
   };
 
@@ -321,10 +321,10 @@ export const Player = () => {
         handleMuteChange(!mute);
         break;
       case "ArrowDown":
-        handleVolumeChange(volume - 5);
+        handleVolumeChange(volume - 5, mute);
         break;
       case "ArrowUp":
-        handleVolumeChange(volume + 5);
+        handleVolumeChange(volume + 5, mute);
         break;
     }
   };
@@ -361,7 +361,7 @@ export const Player = () => {
         mute={mute}
         percentage={volume}
         onMuteChange={handleMuteChange}
-        onVolumeChange={handleVolumeChange}
+        onVolumeChange={volme => handleVolumeChange(volme, mute)}
       />
     </section>
   );
