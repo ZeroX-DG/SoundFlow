@@ -125,10 +125,14 @@ const AudioProgressBar = ({
 
 const AudioVolumeControl = ({
   percentage,
-  onVolumeChange
+  mute,
+  onVolumeChange,
+  onMuteChange
 }: {
   percentage: number;
+  mute: boolean;
   onVolumeChange: (newVolume: number) => void;
+  onMuteChange: (isMute: boolean) => void;
 }) => {
   const volumeBarRef = React.useRef<HTMLDivElement>(null);
 
@@ -141,8 +145,11 @@ const AudioVolumeControl = ({
 
   return (
     <div className="px-5 self-center text-2xl relative volume-control">
-      <button className="cursor-pointer volume-button">
-        <span className="mdi mdi-volume-medium"></span>
+      <button
+        className="cursor-pointer volume-button"
+        onClick={() => onMuteChange}
+      >
+        <span className={`mdi mdi-volume-${mute ? "mute" : "medium"}`}></span>
       </button>
       <div className="bg-white p-5 absolute flex justify-center bottom-10 shadow-md right-3 volume-slider">
         <div
@@ -175,6 +182,7 @@ export const Player = () => {
   const [duration, setDuration] = React.useState(0);
   const [currentTime, setCurrentTime] = React.useState(0);
   const [volume, setVolume] = React.useState(50);
+  const [mute, setMute] = React.useState(false);
   const audio = React.useRef<HTMLAudioElement>(null);
 
   React.useEffect(() => {
@@ -271,7 +279,18 @@ export const Player = () => {
 
   const handleVolumeChange = (percent: number) => {
     setVolume(percent);
-    audio.current.volume = percent / 100;
+    if (!mute) {
+      audio.current.volume = percent / 100;
+    }
+  };
+
+  const handleMuteChange = (isMute: boolean) => {
+    setMute(isMute);
+    if (isMute) {
+      audio.current.volume = 0;
+    } else {
+      handleVolumeChange(volume);
+    }
   };
 
   const handleKeyUp = (e: React.KeyboardEvent<HTMLElement>) => {
@@ -287,6 +306,9 @@ export const Player = () => {
       case "P":
       case "MediaTrackPrevious":
         dispatch({ type: "PREV_TRACK" });
+        break;
+      case "m":
+        handleMuteChange(!mute);
         break;
     }
   };
@@ -320,7 +342,9 @@ export const Player = () => {
         length={duration}
       />
       <AudioVolumeControl
+        mute={mute}
         percentage={volume}
+        onMuteChange={handleMuteChange}
         onVolumeChange={handleVolumeChange}
       />
     </section>
