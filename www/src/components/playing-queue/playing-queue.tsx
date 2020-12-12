@@ -45,6 +45,7 @@ export const PlayingQueue = () => {
                 </div>
                 <div className="flex-grow text-sm">
                   <p
+                    role="button"
                     className="font-bold mb-2 cursor-pointer overflow-hidden"
                     style={{
                       WebkitLineClamp: "2",
