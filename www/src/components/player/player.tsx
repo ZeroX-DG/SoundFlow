@@ -147,7 +147,7 @@ const AudioVolumeControl = ({
     <div className="px-5 self-center text-2xl relative volume-control">
       <button
         className="cursor-pointer volume-button"
-        onClick={() => onMuteChange}
+        onClick={() => onMuteChange(!mute)}
       >
         <span className={`mdi mdi-volume-${mute ? "mute" : "medium"}`}></span>
       </button>
@@ -322,8 +322,10 @@ export const Player = () => {
         break;
       case "ArrowDown":
         handleVolumeChange(volume - 5);
+        break;
       case "ArrowUp":
         handleVolumeChange(volume + 5);
+        break;
     }
   };
 
